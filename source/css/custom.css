@@ -27,11 +27,16 @@ body {
     "Microsoft YaHei",
     "Noto Sans CJK SC",
     sans-serif;
-  background: linear-gradient(
-    180deg,
-    #e7f6ff 0,
-    #f3faff 420px,
-    #f8fcff 100%
+  background-image:
+  linear-gradient(
+    rgba(241, 250, 255, 0.72),
+    rgba(241, 250, 255, 0.82)
+  ),
+  url("/images/sky-bg.jpg");
+background-position: center center;
+background-size: cover;
+background-repeat: no-repeat;
+background-attachment: fixed;
   );
 }
 
