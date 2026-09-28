@@ -225,3 +225,32 @@ body {
     height: 90px;
   }
 }
+/* 文章下方的评论卡片 */
+.blog-comments {
+  box-sizing: border-box;
+  margin: 28px 0 40px;
+  padding: 26px 30px;
+  background: #ffffff;
+  border: 1px solid #d9edf7;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(45, 119, 164, 0.10);
+}
+
+.blog-comments h2 {
+  margin: 0 0 8px;
+  color: #215c80;
+  font-size: 22px;
+}
+
+.blog-comments > p {
+  margin: 0 0 22px;
+  color: #6c8796;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .blog-comments {
+    padding: 18px;
+    border-radius: 12px;
+  }
+}
