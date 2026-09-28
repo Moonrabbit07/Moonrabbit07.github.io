@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Moonrabbit_777的博客ovo
 subtitle: ''
-description: ''
-keywords:
-author: John Doe
-language: en
-timezone: ''
+description: '～学习记录～'
+keywords:CTF、安全方向
+author: Moonrabbit_7
+language: zh-CN
+timezone: 'Asia/Guilin'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://moonrabbit07.github.io
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
