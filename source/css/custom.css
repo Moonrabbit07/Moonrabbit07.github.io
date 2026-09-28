@@ -27,16 +27,22 @@ body {
     "Microsoft YaHei",
     "Noto Sans CJK SC",
     sans-serif;
+
   background-image:
-  linear-gradient(
-    rgba(241, 250, 255, 0.72),
-    rgba(241, 250, 255, 0.82)
-  ),
-  url("/images/sky-bg.jpg");
-background-position: center center;
-background-size: cover;
-background-repeat: no-repeat;
-background-attachment: fixed;
+    linear-gradient(
+      rgba(241, 250, 255, 0.72),
+      rgba(241, 250, 255, 0.82)
+    ),
+    url("/images/sky-bg.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+/* 让主题外层的灰色背景透明，露出 body 的背景图 */
+#wrap {
+  background: transparent;
+}
   );
 }
 
