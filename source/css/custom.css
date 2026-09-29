@@ -37,16 +37,17 @@ body {
 
 /* 顶部横幅 */
 #header {
-  background: #263d4d;
-}
-
-#banner {
   background-image:
-    linear-gradient(rgba(17, 33, 50, 0.30), rgba(17, 33, 50, 0.30)),
+    linear-gradient(rgba(17, 33, 50, 0.22), rgba(17, 33, 50, 0.22)),
     url("/images/sky-bg.jpg");
   background-position: center 35%;
   background-size: cover;
   background-repeat: no-repeat;
+  background-color: #263d4d;
+}
+
+#banner {
+  background: transparent;
 }
 
 #header::after {
