@@ -1,0 +1,234 @@
+/* ================================
+   Moonrabbit 天蓝色博客样式
+   文件位置：source/css/custom.css
+   ================================ */
+
+/* 全站颜色和字体 */
+:root {
+  --sky-strong: #2389c8;
+  --sky-main: #49a9dc;
+  --sky-light: #e9f7ff;
+  --text-main: #263d4d;
+  --text-muted: #6c8796;
+  --card-border: #d9edf7;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--text-main);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "PingFang SC",
+    "Microsoft YaHei",
+    "Noto Sans CJK SC",
+    sans-serif;
+
+  background: #f3f8fc;
+}
+/* 内容区域使用浅色底，图片只用于顶部封面。 */
+#wrap {
+  background: transparent;
+}
+
+/* 顶部横幅 */
+#header {
+  background: #263d4d;
+}
+
+#banner {
+  background-image:
+    linear-gradient(rgba(17, 33, 50, 0.30), rgba(17, 33, 50, 0.30)),
+    url("/images/sky-bg.jpg");
+  background-position: center 35%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#header::after {
+  display: none;
+}
+
+#logo {
+  color: #ffffff;
+  text-shadow: 0 2px 12px rgba(23, 91, 139, 0.22);
+}
+
+#subtitle {
+  color: #f5fcff;
+}
+
+/* 顶部导航 */
+#main-nav,
+#sub-nav {
+  color: #ffffff;
+}
+
+.main-nav-link,
+.nav-icon {
+  color: #ffffff;
+}
+
+.main-nav-link:hover,
+.nav-icon:hover {
+  color: #e4f7ff;
+}
+
+/* 文章和侧边栏卡片 */
+.article,
+.widget {
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(45, 119, 164, 0.10);
+}
+
+.article {
+  background: #ffffff;
+}
+
+.article-inner {
+  border-radius: 16px;
+}
+
+.article-title {
+  color: #254a60;
+}
+
+.article-title:hover {
+  color: var(--sky-strong);
+}
+
+.article-date,
+.article-category-link,
+.widget-title {
+  color: var(--text-muted);
+}
+
+/* 正文 */
+.article-entry {
+  color: var(--text-main);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.article-entry h1,
+.article-entry h2,
+.article-entry h3,
+.article-entry h4 {
+  color: #215c80;
+}
+
+.article-entry h2 {
+  padding-bottom: 8px;
+  border-bottom: 2px solid #d9effa;
+}
+
+.article-entry p {
+  margin-bottom: 1.2em;
+}
+
+.article-entry a,
+.widget a {
+  color: var(--sky-strong);
+}
+
+.article-entry a:hover,
+.widget a:hover {
+  color: #17699e;
+}
+
+.article-entry blockquote {
+  border-left: 4px solid var(--sky-main);
+  background: #f1faff;
+  color: #486879;
+  padding: 12px 18px;
+}
+
+/* 行内代码和代码块 */
+.article-entry code:not([class]) {
+  color: #17699e;
+  background: #edf8fe;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.article-entry .highlight,
+.article-entry pre {
+  border-radius: 10px;
+}
+
+/* 文章底部、翻页 */
+.article-footer,
+.article-nav-link-wrap,
+#page-nav {
+  color: var(--text-muted);
+}
+
+#page-nav .current,
+#page-nav a:hover {
+  background: var(--sky-main);
+  color: #ffffff;
+  border-radius: 6px;
+}
+
+/* 页脚 */
+#footer {
+  background: #d9f0fb;
+  color: #42677b;
+}
+
+#footer a {
+  color: #247eaf;
+}
+
+/* 手机屏幕 */
+@media (max-width: 600px) {
+  .article,
+  .widget {
+    border-radius: 12px;
+  }
+
+  .article-entry {
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  #header::after {
+    width: 90px;
+    height: 90px;
+  }
+}
+/* 文章下方的评论卡片 */
+.blog-comments {
+  box-sizing: border-box;
+  margin: 28px 0 40px;
+  padding: 26px 30px;
+  background: #ffffff;
+  border: 1px solid #d9edf7;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(45, 119, 164, 0.10);
+}
+
+.blog-comments h2 {
+  margin: 0 0 8px;
+  color: #215c80;
+  font-size: 22px;
+}
+
+.blog-comments > p {
+  margin: 0 0 22px;
+  color: #6c8796;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .blog-comments {
+    padding: 18px;
+    border-radius: 12px;
+  }
+}
