@@ -40,6 +40,24 @@
   }
 
   if (home) {
+    var motionStyle = document.createElement("style");
+    motionStyle.id = "sakura-notes-motion";
+    motionStyle.textContent = [
+      "body.sakura-home .sakura-hero { transition: opacity .7s ease, transform .9s cubic-bezier(.22,1,.36,1); }",
+      "body.sakura-entering .sakura-hero { opacity: .76; transform: translate3d(0,-22px,0) scale(.985); }",
+      "body.sakura-home .article .article-inner { background-color: rgba(255,255,255,.34) !important; border: 1px solid rgba(255,255,255,.72); -webkit-backdrop-filter: blur(14px) saturate(1.28); backdrop-filter: blur(14px) saturate(1.28); }",
+      "body.sakura-home .article .article-entry { max-height: 310px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 68%,transparent 100%); mask-image: linear-gradient(#000 68%,transparent 100%); }",
+      "body.sakura-home .article .article-entry .article-more-link { display: none; }",
+      "body.sakura-home .article .article-inner { padding-bottom: 78px; }",
+      ".sakura-read-more { position: absolute; right: 28px; bottom: 22px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: 1px solid rgba(255,255,255,.82); border-radius: 999px; background: rgba(255,255,255,.48); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #69516f !important; text-decoration: none; font-weight: 600; box-shadow: 0 6px 20px rgba(92,73,111,.1); transition: background .3s ease, transform .3s ease; }",
+      ".sakura-read-more:hover, .sakura-read-more:focus-visible { background: rgba(255,255,255,.75); transform: translateY(-2px); }",
+      "body.sakura-home .article .article-inner::before { opacity: .87; }",
+      "@media (prefers-reduced-motion: no-preference) { body.sakura-home .article .article-inner.sakura-reveal { opacity: 0; transform: translate3d(0,76px,0) scale(.97); transition: opacity .85s ease, transform 1.05s cubic-bezier(.22,1,.36,1), box-shadow .55s ease, border-radius .7s ease; } body.sakura-home .article .article-inner.sakura-reveal.sakura-visible { opacity: 1; transform: translate3d(0,0,0) scale(1); } body.sakura-home .article .article-inner.sakura-visible:hover { transform: translate3d(0,-4px,0) scale(1.004); } }",
+      "@media (max-width:600px) { body.sakura-home .article .article-entry { max-height: 260px; } .sakura-read-more { right: 20px; bottom: 17px; } }",
+      "@media (prefers-reduced-motion: reduce) { body.sakura-entering .sakura-hero { opacity: 1; transform: none; } .sakura-read-more { transition: none; } }"
+    ].join("\n");
+    document.head.appendChild(motionStyle);
+
     var headerNav = document.getElementById("header-inner");
     if (headerNav) {
       headerNav.setAttribute("inert", "");
@@ -48,8 +66,7 @@
 
     var hero = document.createElement("div");
     hero.className = "sakura-hero";
-    hero.innerHTML = '<section class="sakura-card">' + cardContent() + '</section>' +
-      '<span class="sakura-scroll-hint" aria-hidden="true">轻触画面，继续阅读 ↓</span>';
+    hero.innerHTML = '<section class="sakura-card">' + cardContent() + '</section>';
     header.appendChild(hero);
 
     var main = document.getElementById("main");
@@ -58,11 +75,27 @@
       postAnchor.id = "sakura-posts";
       postAnchor.setAttribute("aria-hidden", "true");
       main.insertBefore(postAnchor, main.firstChild);
+
+      main.querySelectorAll(".article").forEach(function (article) {
+        var titleLink = article.querySelector(".article-title[href]");
+        var inner = article.querySelector(".article-inner");
+        if (!titleLink || !inner) return;
+
+        var moreLink = document.createElement("a");
+        moreLink.className = "sakura-read-more";
+        moreLink.href = titleLink.href;
+        moreLink.textContent = "阅读全文 →";
+        inner.appendChild(moreLink);
+      });
     }
 
     function enterBlog() {
+      document.body.classList.add("sakura-entering");
       var target = Math.max(0, header.getBoundingClientRect().bottom + window.scrollY - 18);
       window.scrollTo({ top: target, behavior: reduced ? "auto" : "smooth" });
+      setTimeout(function () {
+        document.body.classList.remove("sakura-entering");
+      }, 1100);
     }
 
     header.setAttribute("role", "button");
@@ -81,8 +114,7 @@
     loader.setAttribute("role", "button");
     loader.setAttribute("tabindex", "0");
     loader.setAttribute("aria-label", "进入博客正文，加载后自动滑动");
-    loader.innerHTML = '<section class="sakura-card">' + cardContent() + '</section>' +
-      '<span class="sakura-loading-caption">春日庭院 · 正在开启</span>';
+    loader.innerHTML = '<section class="sakura-card">' + cardContent() + '</section>';
     document.body.appendChild(loader);
 
     var started = Date.now();
@@ -153,7 +185,6 @@
     });
   }, { passive: true });
 
-  // 进入视野才轻轻浮现；没有观察器时保持原样可见。
   var glassPanels = document.querySelectorAll(
     ".article .article-inner, .archive-article .archive-article-inner, .blog-comments"
   );
@@ -164,24 +195,26 @@
         entry.target.classList.add("sakura-visible");
         revealObserver.unobserve(entry.target);
       });
-    }, { rootMargin: "0px 0px 30px 0px", threshold: 0.04 });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.04 });
+
     glassPanels.forEach(function (panel) {
       panel.classList.add("sakura-reveal");
       revealObserver.observe(panel);
     });
   }
 
-  // 指针附近的一层柔光随手势移动，面板本身不做剧烈位移。
   if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
     glassPanels.forEach(function (panel) {
       var pending = false;
       var nextX = 0;
       var nextY = 0;
+
       panel.addEventListener("pointermove", function (event) {
         var rect = panel.getBoundingClientRect();
         nextX = event.clientX - rect.left;
         nextY = event.clientY - rect.top;
         if (pending) return;
+
         pending = true;
         requestAnimationFrame(function () {
           panel.style.setProperty("--glow-x", nextX + "px");
@@ -189,6 +222,7 @@
           pending = false;
         });
       }, { passive: true });
+
       panel.addEventListener("pointerleave", function () {
         panel.style.removeProperty("--glow-x");
         panel.style.removeProperty("--glow-y");
