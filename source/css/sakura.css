@@ -1,17 +1,21 @@
 :root {
   --sakura-ink: #424157;
   --sakura-rose: #a95d7b;
-  --sakura-glass: rgba(255, 251, 253, 0.46);
+  --sakura-glass: rgba(255, 251, 253, 0.52);
 }
 
 body {
   color: var(--sakura-ink);
-  background: #f5edf3 url("/images/sakura-garden.webp") center center / cover fixed no-repeat;
+  background: #f7eff6;
 }
 
-#wrap { background: transparent; }
+#wrap {
+  background: linear-gradient(180deg, #f7eff6 0%, #f7eff6 21%, #eef1fa 62%, #fcf8fb 100%);
+}
 #header {
-  background: linear-gradient(180deg, rgba(50, 41, 71, .23), rgba(250, 224, 232, .04));
+  background:
+    linear-gradient(180deg, rgba(56, 42, 65, .12) 0%, rgba(249, 235, 245, .02) 52%, #f7eff6 100%),
+    url("/images/sakura-garden.webp") center center / cover no-repeat;
   border: 0;
 }
 #banner { background: transparent; }
@@ -42,24 +46,37 @@ body.sakura-home #header-outer { z-index: 2; }
   pointer-events: none;
 }
 .sakura-card {
+  position: relative;
   width: min(100%, 430px);
   box-sizing: border-box;
-  padding: 35px 32px 32px;
+  padding: 38px 35px 34px;
   text-align: center;
   color: var(--sakura-ink);
-  background: var(--sakura-glass);
-  border: 1px solid rgba(255,255,255,.82);
-  border-radius: 27px;
-  box-shadow: 0 22px 75px rgba(93, 57, 83, .18), inset 0 1px rgba(255,255,255,.74);
-  -webkit-backdrop-filter: blur(17px) saturate(1.35);
-  backdrop-filter: blur(17px) saturate(1.35);
+  background: linear-gradient(135deg, rgba(255,255,255,.68), var(--sakura-glass) 48%, rgba(255,237,244,.47));
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 38px 49px 42px 53px / 46px 38px 54px 42px;
+  box-shadow: 0 18px 65px rgba(93, 57, 83, .13), inset 0 1px rgba(255,255,255,.48);
+  -webkit-backdrop-filter: blur(25px) saturate(1.18);
+  backdrop-filter: blur(25px) saturate(1.18);
   pointer-events: auto;
-  transition: backdrop-filter .6s ease, background .6s ease, box-shadow .6s ease;
-  animation: sakura-breathe 6s ease-in-out infinite;
+  transition: backdrop-filter .8s ease, background .8s ease, box-shadow .8s ease, transform .8s ease, border-radius .9s ease;
+  animation: sakura-card-breathe 6s ease-in-out infinite;
+}
+.sakura-card::before {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  z-index: -1;
+  border-radius: inherit;
+  background: rgba(255, 250, 254, .32);
+  filter: blur(18px);
+  opacity: .58;
+  pointer-events: none;
 }
 .sakura-card:hover {
-  background: rgba(255, 251, 253, .58);
-  box-shadow: 0 27px 90px rgba(93, 57, 83, .22), inset 0 1px rgba(255,255,255,.86);
+  background: linear-gradient(135deg, rgba(255,255,255,.73), rgba(255,251,253,.58), rgba(255,237,244,.51));
+  border-radius: 42px 44px 47px 48px / 40px 48px 45px 52px;
+  box-shadow: 0 22px 76px rgba(93, 57, 83, .17), inset 0 1px rgba(255,255,255,.56);
 }
 body.sakura-scrolled .sakura-card {
   -webkit-backdrop-filter: blur(21px) saturate(1.4);
@@ -93,9 +110,32 @@ body.sakura-scrolled .sakura-card {
   transition: transform .2s ease, background .2s ease;
 }
 .sakura-actions a:hover { transform: translateY(-2px); background: #fff; }
-.sakura-actions a:first-child { color: #fff; background: #bc7897; border-color: #bc7897; }
+.sakura-actions a:first-child { color: #fff; background: rgba(169,93,123,.83); border-color: rgba(255,255,255,.5); }
 .sakura-actions a:first-child:hover { background: #a85e80; }
-.sakura-scroll { position: absolute; bottom: 27px; color: #fff; text-shadow: 0 2px 8px #634e63; letter-spacing: .18em; font-size: 12px; }
+.sakura-enter {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid rgba(255,255,255,.55);
+  border-radius: 999px;
+  padding: 11px 21px;
+  background: rgba(255,250,253,.28);
+  color: #55445b;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: .11em;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: background .4s ease, box-shadow .4s ease, translate .4s ease;
+}
+.sakura-enter:hover, .sakura-enter:focus-visible {
+  background: rgba(255,255,255,.55);
+  box-shadow: 0 6px 24px rgba(100,69,91,.14);
+  translate: 0 -2px;
+}
 
 /* 背景、纱质侧栏，正文保留易读的白色。 */
 .article { background: transparent; }
@@ -107,7 +147,7 @@ body.sakura-scrolled .sakura-card {
 }
 #sidebar .moon-profile-cover { background: linear-gradient(125deg, rgba(255,202,218,.66), rgba(199,209,255,.58)); }
 
-/* 开场只覆盖首页，图片与头像加载完后淡出。 */
+/* 开场只覆盖首页，图片加载完后淡出，保留可点击的封面。 */
 .sakura-loader {
   position: fixed;
   z-index: 10000;
@@ -127,6 +167,7 @@ body.sakura-scrolled .sakura-card {
   animation: sakura-breathe 6s ease-in-out infinite;
 }
 .sakura-loader .sakura-card { position: relative; z-index: 2; }
+.sakura-loader .sakura-actions { visibility: hidden; }
 .sakura-loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
 .sakura-loading-caption { position: absolute; bottom: 28px; z-index: 2; color: #fff; text-shadow: 0 2px 8px #6c5366; letter-spacing: .2em; font-size: 13px; }
 
@@ -144,6 +185,10 @@ body.sakura-scrolled .sakura-card {
   animation-delay: var(--delay, 0s);
 }
 @keyframes sakura-breathe { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.08); } }
+@keyframes sakura-card-breathe {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.008); filter: brightness(1.035); }
+}
 @keyframes sakura-fall {
   from { transform: translate3d(0, -5vh, 0) rotate(0deg); }
   to { transform: translate3d(var(--drift, 90px), 110vh, 0) rotate(580deg); }
@@ -154,7 +199,7 @@ body.sakura-scrolled .sakura-card {
   .sakura-card { padding: 27px 21px; }
   .sakura-avatar { width: 88px; height: 88px; }
   .sakura-intro { font-size: 14px; }
-  .sakura-scroll { bottom: 14px; }
+  .sakura-enter { bottom: 19px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; }
