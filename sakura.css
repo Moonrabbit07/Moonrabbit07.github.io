@@ -1,0 +1,163 @@
+:root {
+  --sakura-ink: #424157;
+  --sakura-rose: #a95d7b;
+  --sakura-glass: rgba(255, 251, 253, 0.46);
+}
+
+body {
+  color: var(--sakura-ink);
+  background: #f5edf3 url("/images/sakura-garden.webp") center center / cover fixed no-repeat;
+}
+
+#wrap { background: transparent; }
+#header {
+  background: linear-gradient(180deg, rgba(50, 41, 71, .23), rgba(250, 224, 232, .04));
+  border: 0;
+}
+#banner { background: transparent; }
+#header::after { display: none; }
+#logo { text-shadow: 0 2px 18px rgba(55, 38, 62, .5); }
+.sakura-light {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 25% 20%, rgba(255,254,236,.31), transparent 42%),
+              radial-gradient(circle at 82% 70%, rgba(255,212,233,.16), transparent 45%);
+  animation: sakura-breathe 6s ease-in-out infinite;
+}
+
+/* 首屏居中的个人介绍；文章继续位于下方。 */
+body.sakura-home #header { height: min(940px, 100svh); min-height: 610px; }
+body.sakura-home #header-title { display: none; }
+body.sakura-home #header-outer { z-index: 2; }
+.sakura-hero {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 70px 20px 32px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.sakura-card {
+  width: min(100%, 430px);
+  box-sizing: border-box;
+  padding: 35px 32px 32px;
+  text-align: center;
+  color: var(--sakura-ink);
+  background: var(--sakura-glass);
+  border: 1px solid rgba(255,255,255,.82);
+  border-radius: 27px;
+  box-shadow: 0 22px 75px rgba(93, 57, 83, .18), inset 0 1px rgba(255,255,255,.74);
+  -webkit-backdrop-filter: blur(17px) saturate(1.35);
+  backdrop-filter: blur(17px) saturate(1.35);
+  pointer-events: auto;
+  transition: backdrop-filter .6s ease, background .6s ease, box-shadow .6s ease;
+  animation: sakura-breathe 6s ease-in-out infinite;
+}
+.sakura-card:hover {
+  background: rgba(255, 251, 253, .58);
+  box-shadow: 0 27px 90px rgba(93, 57, 83, .22), inset 0 1px rgba(255,255,255,.86);
+}
+body.sakura-scrolled .sakura-card {
+  -webkit-backdrop-filter: blur(21px) saturate(1.4);
+  backdrop-filter: blur(21px) saturate(1.4);
+}
+.sakura-avatar {
+  width: 104px;
+  height: 104px;
+  display: block;
+  margin: 0 auto 17px;
+  border: 5px solid rgba(255,255,255,.88);
+  border-radius: 50%;
+  background: #fff2f5;
+  object-fit: cover;
+  box-shadow: 0 8px 25px rgba(105,58,87,.18);
+}
+.sakura-kicker { margin: 0 0 9px; color: var(--sakura-rose); font-size: 13px; letter-spacing: .2em; }
+.sakura-card h1 { margin: 0; color: #544259; font-size: clamp(27px, 5vw, 36px); line-height: 1.3; }
+.sakura-handle { margin: 6px 0 16px; color: #806d80; font-size: 14px; }
+.sakura-intro { margin: 0 auto 23px; max-width: 20em; color: #574e5e; line-height: 1.85; font-size: 15px; }
+.sakura-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.sakura-actions a {
+  min-width: 110px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #73465e;
+  background: rgba(255,255,255,.7);
+  border: 1px solid rgba(255,255,255,.85);
+  transition: transform .2s ease, background .2s ease;
+}
+.sakura-actions a:hover { transform: translateY(-2px); background: #fff; }
+.sakura-actions a:first-child { color: #fff; background: #bc7897; border-color: #bc7897; }
+.sakura-actions a:first-child:hover { background: #a85e80; }
+.sakura-scroll { position: absolute; bottom: 27px; color: #fff; text-shadow: 0 2px 8px #634e63; letter-spacing: .18em; font-size: 12px; }
+
+/* 背景、纱质侧栏，正文保留易读的白色。 */
+.article { background: transparent; }
+.article-inner { background: rgba(255, 253, 254, .95); }
+#sidebar .moon-profile, #sidebar .widget, #footer {
+  background: rgba(255, 250, 253, .52);
+  -webkit-backdrop-filter: blur(12px) saturate(1.25);
+  backdrop-filter: blur(12px) saturate(1.25);
+}
+#sidebar .moon-profile-cover { background: linear-gradient(125deg, rgba(255,202,218,.66), rgba(199,209,255,.58)); }
+
+/* 开场只覆盖首页，图片与头像加载完后淡出。 */
+.sakura-loader {
+  position: fixed;
+  z-index: 10000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: #f5eaf0 url("/images/sakura-garden.webp") center / cover no-repeat;
+  transition: opacity .85s ease, visibility .85s ease;
+}
+.sakura-loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255,248,251,.14);
+  animation: sakura-breathe 6s ease-in-out infinite;
+}
+.sakura-loader .sakura-card { position: relative; z-index: 2; }
+.sakura-loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.sakura-loading-caption { position: absolute; bottom: 28px; z-index: 2; color: #fff; text-shadow: 0 2px 8px #6c5366; letter-spacing: .2em; font-size: 13px; }
+
+.sakura-particles { position: fixed; z-index: 5; inset: 0; pointer-events: none; overflow: hidden; }
+.sakura-petal {
+  position: absolute;
+  top: -30px;
+  width: 12px;
+  height: 17px;
+  border-radius: 80% 5% 80% 15%;
+  background: radial-gradient(circle at 30% 30%, #fffdfd, #f2a5bb 77%);
+  opacity: .72;
+  filter: drop-shadow(0 2px 3px rgba(161,80,112,.14));
+  animation: sakura-fall var(--fall, 14s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes sakura-breathe { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.08); } }
+@keyframes sakura-fall {
+  from { transform: translate3d(0, -5vh, 0) rotate(0deg); }
+  to { transform: translate3d(var(--drift, 90px), 110vh, 0) rotate(580deg); }
+}
+@media (max-width: 600px) {
+  body { background-attachment: scroll; }
+  body.sakura-home #header { height: 100svh; min-height: 570px; }
+  .sakura-card { padding: 27px 21px; }
+  .sakura-avatar { width: 88px; height: 88px; }
+  .sakura-intro { font-size: 14px; }
+  .sakura-scroll { bottom: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+  .sakura-card, .sakura-loader::before, .sakura-petal, .sakura-light { animation: none !important; }
+  .sakura-loader { transition-duration: .1s; }
+}
