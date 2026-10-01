@@ -37,7 +37,7 @@
       '<h1>Moonrabbit_7</h1>' +
       '<p class="sakura-handle">@Moonrabbit07</p>' +
       '<p class="sakura-intro">记录 CTF、网络安全与学习中的问题和收获。欢迎来到我的春日庭院。</p>' +
-      '<div class="sakura-actions"><a href="#sakura-posts">阅读文章</a>' +
+      '<div class="sakura-actions">' +
       '<a href="https://github.com/Moonrabbit07" target="_blank" rel="noopener noreferrer">我的 GitHub</a></div>';
   }
 
@@ -45,7 +45,7 @@
     var hero = document.createElement("div");
     hero.className = "sakura-hero";
     hero.innerHTML = '<section class="sakura-card">' + cardContent() + '</section>' +
-      '<span class="sakura-scroll">向下滚动 · 阅读笔记 ↓</span>';
+      '<button class="sakura-enter" type="button">点击进入博客 &nbsp; ↓</button>';
     header.appendChild(hero);
     var main = document.getElementById("main");
     if (main) {
@@ -54,6 +54,24 @@
       postAnchor.setAttribute("aria-hidden", "true");
       main.insertBefore(postAnchor, main.firstChild);
     }
+
+    hero.querySelector(".sakura-enter").addEventListener("click", function () {
+      var target = Math.max(0, header.getBoundingClientRect().bottom + window.scrollY - 18);
+      if (reduced) {
+        window.scrollTo(0, target);
+      } else if (window.gsap) {
+        var position = { y: window.scrollY };
+        window.gsap.to(position, {
+          y: target,
+          duration: 1.65,
+          ease: "power2.inOut",
+          overwrite: true,
+          onUpdate: function () { window.scrollTo(0, position.y); }
+        });
+      } else {
+        window.scrollTo({ top: target, behavior: "smooth" });
+      }
+    });
 
     var loader = document.createElement("div");
     loader.className = "sakura-loader";
