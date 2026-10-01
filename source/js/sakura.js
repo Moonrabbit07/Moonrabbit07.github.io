@@ -153,6 +153,49 @@
     });
   }, { passive: true });
 
+  // 进入视野才轻轻浮现；没有观察器时保持原样可见。
+  var glassPanels = document.querySelectorAll(
+    ".article .article-inner, .archive-article .archive-article-inner, .blog-comments"
+  );
+  if (!reduced && "IntersectionObserver" in window) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("sakura-visible");
+        revealObserver.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px 30px 0px", threshold: 0.04 });
+    glassPanels.forEach(function (panel) {
+      panel.classList.add("sakura-reveal");
+      revealObserver.observe(panel);
+    });
+  }
+
+  // 指针附近的一层柔光随手势移动，面板本身不做剧烈位移。
+  if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    glassPanels.forEach(function (panel) {
+      var pending = false;
+      var nextX = 0;
+      var nextY = 0;
+      panel.addEventListener("pointermove", function (event) {
+        var rect = panel.getBoundingClientRect();
+        nextX = event.clientX - rect.left;
+        nextY = event.clientY - rect.top;
+        if (pending) return;
+        pending = true;
+        requestAnimationFrame(function () {
+          panel.style.setProperty("--glow-x", nextX + "px");
+          panel.style.setProperty("--glow-y", nextY + "px");
+          pending = false;
+        });
+      }, { passive: true });
+      panel.addEventListener("pointerleave", function () {
+        panel.style.removeProperty("--glow-x");
+        panel.style.removeProperty("--glow-y");
+      });
+    });
+  }
+
   if (!reduced && window.tsParticles && typeof window.tsParticles.load === "function") {
     var canvas = document.createElement("div");
     canvas.id = "sakura-tsparticles";
