@@ -37,15 +37,14 @@ jobs:
         
       - name: Check generated files
         run: |
-          echo "===== public directory ====="
-          find public -maxdepth 4 -type f | sort
+             echo "===== Search generated HTML files ====="
+             find public -type f -name "index.html" | sort
 
-          echo "===== Check dengbao20 ====="
-          if [ -f "public/dengbao20/index.html" ]; then
-            echo "SUCCESS: public/dengbao20/index.html exists"
-          else
-            echo "ERROR: public/dengbao20/index.html NOT FOUND"
-          fi
+             echo "===== Search for dengbao article ====="
+             find public -type f | grep -E "2026/10|dengbao|等保" || true
+
+             echo "===== Search article title in generated files ====="
+             grep -R -l "等保2.0的理解" public || true        
 
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
