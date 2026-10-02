@@ -37,15 +37,17 @@ jobs:
         
       - name: Check generated files
         run: |
-             echo "===== Search generated HTML files ====="
-             find public -type f -name "index.html" | sort
+            echo "===== Search generated HTML files ====="
+            find public -name "*.html"
 
-             echo "===== Search for dengbao article ====="
-             find public -type f | grep -E "2026/10|dengbao|等保" || true
+            echo "===== Search for dengbao article ====="
+            grep -R "dengbao" public/ || true
 
-             echo "===== Search article title in generated files ====="
-             grep -R -l "等保2.0的理解" public || true        
-
+            echo "===== Search article title in generated files ====="
+            ARTICLE_TITLE=$(grep '^title:' source/_posts/hello-world.md | sed 's/^title: *//')
+            echo "ARTICLE_TITLE=[$ARTICLE_TITLE]"
+            grep -R "$ARTICLE_TITLE" public/ || true
+            
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
         with:
