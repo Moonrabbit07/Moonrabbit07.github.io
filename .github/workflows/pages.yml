@@ -34,6 +34,18 @@ jobs:
 
       - name: Generate website
         run: npm run build
+        
+      - name: Check generated files
+        run: |
+          echo "===== public directory ====="
+          find public -maxdepth 4 -type f | sort
+
+          echo "===== Check dengbao20 ====="
+          if [ -f "public/dengbao20/index.html" ]; then
+            echo "SUCCESS: public/dengbao20/index.html exists"
+          else
+            echo "ERROR: public/dengbao20/index.html NOT FOUND"
+          fi
 
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
