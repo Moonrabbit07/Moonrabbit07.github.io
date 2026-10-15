@@ -82,6 +82,8 @@ hexo.extend.injector.register("head_end", `
 hexo.extend.injector.register("body_end", `
 <script>
 (function () {
+  var counterUrl = "https://moonrabbit-counter.2500330203lhy.workers.dev";
+
   function showFootfall() {
     var content = document.querySelector("#sidebar .moon-profile-content");
     if (!content || document.querySelector(".moon-footfall")) return;
@@ -93,46 +95,44 @@ hexo.extend.injector.register("body_end", `
       '<div class="moon-footfall-item">' +
         '<span class="moon-footfall-icon" aria-hidden="true">🐾</span>' +
         '<span class="moon-footfall-label">总踩踏量</span>' +
-        '<strong class="moon-footfall-value" id="busuanzi_site_pv">···</strong>' +
+        '<strong class="moon-footfall-value" id="moon-site-pv">···</strong>' +
       '</div>' +
       '<div class="moon-footfall-item">' +
         '<span class="moon-footfall-icon" aria-hidden="true">🌸</span>' +
         '<span class="moon-footfall-label">今日踩踏</span>' +
-        '<strong class="moon-footfall-value" id="busuanzi_today_pv">···</strong>' +
+        '<strong class="moon-footfall-value" id="moon-today-pv">···</strong>' +
       '</div>';
 
     var follow = content.querySelector(".moon-profile-follow");
     content.insertBefore(panel, follow || null);
 
-    var numbers = panel.querySelectorAll(".moon-footfall-value");
-    numbers.forEach(function (number) {
-      var observer = new MutationObserver(function () {
-        if (number.textContent.trim() === "···") return;
-        number.classList.add("is-ready");
-        observer.disconnect();
-      });
-      observer.observe(number, {
-        childList: true,
-        characterData: true,
-        subtree: true
-      });
+    var total = panel.querySelector("#moon-site-pv");
+    var today = panel.querySelector("#moon-today-pv");
+
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 8000);
+    fetch(counterUrl + "/visit", {
+      method: "POST",
+      cache: "no-store",
+      credentials: "omit",
+      signal: controller.signal
+    }).then(function (response) {
+      if (!response.ok) throw new Error("统计接口暂时不可用");
+      return response.json();
+    }).then(function (data) {
+      if (!Number.isSafeInteger(data.total) || !Number.isSafeInteger(data.today)) {
+        throw new Error("统计结果格式不正确");
+      }
+      total.textContent = data.total.toLocaleString("zh-CN");
+      today.textContent = data.today.toLocaleString("zh-CN");
+      total.classList.add("is-ready");
+      today.classList.add("is-ready");
+    }).catch(function () {
+      total.textContent = today.textContent = "—";
+      panel.title = "统计暂时没有回应，稍后刷新即可";
+    }).finally(function () {
+      clearTimeout(timer);
     });
-
-    var script = document.createElement("script");
-    script.src = "https://cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js";
-    script.async = true;
-    script.onerror = function () {
-      numbers.forEach(function (number) {
-        if (number.textContent.trim() === "···") number.textContent = "—";
-      });
-    };
-    document.body.appendChild(script);
-
-    setTimeout(function () {
-      numbers.forEach(function (number) {
-        if (number.textContent.trim() === "···") number.textContent = "—";
-      });
-    }, 12000);
   }
 
   if (document.readyState === "loading") {
