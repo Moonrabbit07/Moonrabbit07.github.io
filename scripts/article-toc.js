@@ -1,8 +1,23 @@
 /* global hexo */
-// 自动为 Hexo 文章页生成悬浮目录；保存为 scripts/article-toc.js。
+// 为文章开头生成可见的分层目录，并在滚动时提供悬浮目录。
 
 hexo.extend.injector.register("head_end", `
 <style>
+.article-entry .moon-toc-inline {
+  box-sizing: border-box;
+  width: min(360px, 100%);
+  max-height: min(56vh, 460px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin: 4px 0 30px auto;
+  padding: 19px 16px;
+  border: 1px solid rgba(255,255,255,.86);
+  border-radius: 25px 29px 24px 30px;
+  background: linear-gradient(145deg, rgba(255,255,255,.78), rgba(255,234,247,.65));
+  box-shadow: 0 15px 38px rgba(73,65,104,.14), inset 0 1px rgba(255,255,255,.9);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(18px) saturate(1.2);
+}
 .moon-toc {
   position: fixed;
   z-index: 900;
@@ -52,11 +67,21 @@ hexo.extend.injector.register("head_end", `
   font-size: 16px;
   font-weight: 700;
 }
-.moon-toc ol { margin: 0; padding: 0; list-style: none; }
-.moon-toc li { margin: 0; padding: 0; list-style: none; }
-.moon-toc .level-h3 { padding-left: 15px; }
-.moon-toc .level-h4 { padding-left: 30px; }
-.moon-toc a {
+.moon-toc-inline .moon-toc-title { margin: 0 10px 11px; }
+.moon-toc ol,
+.moon-toc-inline ol { margin: 0; padding: 0; list-style: none; }
+.moon-toc li,
+.moon-toc-inline li { margin: 0; padding: 0; list-style: none; }
+.moon-toc ol ol,
+.moon-toc-inline ol ol {
+  margin-left: 13px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(169,119,157,.3);
+}
+.moon-toc .level-h4 > a,
+.moon-toc-inline .level-h4 > a { font-size: 12px; opacity: .85; }
+.moon-toc a,
+.moon-toc-inline a {
   display: block;
   padding: 8px 10px;
   border-radius: 12px;
@@ -67,11 +92,14 @@ hexo.extend.injector.register("head_end", `
   overflow-wrap: anywhere;
 }
 .moon-toc a:hover,
-.moon-toc a.is-active {
+.moon-toc a.is-active,
+.moon-toc-inline a:hover,
+.moon-toc-inline a.is-active {
   color: #805077;
   background: rgba(246,215,234,.7);
 }
 .moon-toc a:focus-visible,
+.moon-toc-inline a:focus-visible,
 .moon-toc summary:focus-visible {
   outline: 2px solid #a95d7b;
   outline-offset: 2px;
@@ -80,6 +108,7 @@ hexo.extend.injector.register("head_end", `
 .article-entry h3,
 .article-entry h4 { scroll-margin-top: 24px; }
 @media (max-width: 600px) {
+  .article-entry .moon-toc-inline { width: 100%; max-height: 48vh; }
   .moon-toc summary { padding: 10px 15px; }
   .moon-toc nav { max-height: 58vh; }
 }
@@ -99,6 +128,10 @@ hexo.extend.injector.register("body_end", `
   var used = new Set(Array.prototype.map.call(document.querySelectorAll("[id]"), function (node) {
     return node.id;
   }));
+  var intro = document.createElement("aside");
+  intro.className = "moon-toc-inline";
+  intro.setAttribute("aria-label", "文章目录");
+
   var toc = document.createElement("aside");
   toc.className = "moon-toc";
   var box = document.createElement("details");
@@ -109,8 +142,35 @@ hexo.extend.injector.register("body_end", `
   var title = document.createElement("div");
   title.className = "moon-toc-title";
   title.textContent = "文章目录 · " + headings.length + " 节";
-  var list = document.createElement("ol");
   var links = [];
+
+  function buildList() {
+    var root = document.createElement("ol");
+    var parents = [];
+    headings.forEach(function (heading) {
+      var level = Number(heading.tagName.slice(1));
+      while (parents.length && parents[parents.length - 1].level >= level) parents.pop();
+      var parent = parents.length ? parents[parents.length - 1].item : null;
+      var container = root;
+      if (parent) {
+        container = parent.querySelector(":scope > ol");
+        if (!container) {
+          container = document.createElement("ol");
+          parent.appendChild(container);
+        }
+      }
+      var item = document.createElement("li");
+      item.className = "level-" + heading.tagName.toLowerCase();
+      var link = document.createElement("a");
+      link.href = "#" + encodeURIComponent(heading.id);
+      link.textContent = heading.textContent.trim();
+      item.appendChild(link);
+      container.appendChild(item);
+      links.push(link);
+      parents.push({ level: level, item: item });
+    });
+    return root;
+  }
 
   headings.forEach(function (heading, index) {
     if (!heading.id) {
@@ -121,18 +181,17 @@ hexo.extend.injector.register("body_end", `
       heading.id = id;
       used.add(id);
     }
-    var item = document.createElement("li");
-    item.className = "level-" + heading.tagName.toLowerCase();
-    var link = document.createElement("a");
-    link.href = "#" + encodeURIComponent(heading.id);
-    link.textContent = heading.textContent.trim();
-    item.appendChild(link);
-    list.appendChild(item);
-    links.push(link);
   });
 
+  var introTitle = title.cloneNode(true);
+  intro.appendChild(introTitle);
+  intro.appendChild(buildList());
+  var firstParagraph = entry.querySelector(":scope > p");
+  if (firstParagraph) firstParagraph.after(intro);
+  else entry.insertBefore(intro, entry.firstChild);
+
   nav.appendChild(title);
-  nav.appendChild(list);
+  nav.appendChild(buildList());
   box.appendChild(summary);
   box.appendChild(nav);
   toc.appendChild(box);
@@ -155,8 +214,8 @@ hexo.extend.injector.register("body_end", `
     headings.forEach(function (heading, index) {
       if (heading.getBoundingClientRect().top <= 110) current = index;
     });
-    links.forEach(function (link, index) {
-      var active = index === current;
+    links.forEach(function (link) {
+      var active = link.getAttribute("href") === "#" + encodeURIComponent(headings[current].id);
       link.classList.toggle("is-active", active);
       if (active) link.setAttribute("aria-current", "location");
       else link.removeAttribute("aria-current");
