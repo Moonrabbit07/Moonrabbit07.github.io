@@ -14,7 +14,7 @@ tags:
 
 ## 一、实验过程与成果
 
-1.通过 macOS 的 `lsof` 命令查看 QQ 进程的网络连接信息
+### 通过 macOS 的 `lsof` 命令查看 QQ 进程的网络连接信息
 
 ```bash
    pgrep -fl QQ
@@ -34,7 +34,7 @@ tags:
 
 学习Wireshark 中的 IP 地址、端口和 TCP 流编号，从而定位 QQ 的 TCP 通信。
 
-- 过滤方式：
+#### 过滤方式：
     
     #### IP 过滤：从众多通信中挑出与指定 IP 有关的数据。
     
