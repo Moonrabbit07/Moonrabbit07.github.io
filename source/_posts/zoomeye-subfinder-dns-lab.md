@@ -311,9 +311,6 @@ Server: Apache
 | 网络连接 | 对应主机上的目标服务是否能建立连接？ | curl 详细日志、授权网络诊断 | 连接成功/超时/拒绝 |
 | 应用响应 | Web 服务返回什么？ | curl | 200、301、403、404、响应头 |
 
-## 3. 后续学习计划
-
-接下来希望补充三方面练习：一是理解完整 DNS 报文中的 `QUESTION`、`ANSWER`、`AUTHORITY` 字段；二是在自己的 Hexo/GitHub Pages 网站上比较 `dig`、`curl -I` 的输出；三是在自有测试域名上演练“子域名收集→DNS 验证→HTTP 验证→结果整理”的流程。
 
 **总结：** 这次作业让我认识到，安全信息收集不是“工具显示什么就相信什么”，而是不断区分观察事实、合理解释和未经证实的猜测。
 
@@ -327,4 +324,3 @@ Server: Apache
 - [ProjectDiscovery：Subfinder Running](https://docs.projectdiscovery.io/opensource/subfinder/running)
 - [Hexo：资源文件夹](https://hexo.io/zh-cn/docs/asset-folders)
 
-> **实验规范：** 本文以公开信息阅读和学习性查询为主。对于不属于自己的互联网资产，不应在缺少授权的情况下进行主动批量服务探测、漏洞验证或扫描；需要复现实验时优先使用自己的域名或实验环境。
